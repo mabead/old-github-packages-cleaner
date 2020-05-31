@@ -1,0 +1,12 @@
+name: 'Old GitHub Packages Cleaner'
+description: 'Deletes GitHub Packages that do not respect the retention criterias'
+inputs:
+  who-to-greet:
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+runs:
+  using: 'docker'
+  image: 'src/OldGitHubPackagesCleaner/Dockerfile'
+  args:
+    - ${{ inputs.who-to-greet }}
