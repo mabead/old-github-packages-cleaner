@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OldGitHubPackagesCleaner": {
+      "commandName": "Project",
+      "commandLineArgs": "foo bar"
+    }
+  }
+}

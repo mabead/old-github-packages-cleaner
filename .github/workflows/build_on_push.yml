@@ -1,0 +1,60 @@
+name: Build GitHub Action
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+      
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9
+      with:
+        versionSpec: '5.1.x'
+        
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/gitversion/execute@v0.9
+      
+    # Look here for more details on how to build and publish a docker image:
+    # 
+    #   https://help.github.com/en/actions/language-and-framework-guides/publishing-docker-images#publishing-images-to-github-packages
+    #
+    - name: Docker build (master branch)
+      if: github.ref == 'refs/heads/master'
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: mabead/old-github-packages-cleaner/old-github-packages-cleaner
+        path: src/OldGitHubPackagesCleaner/
+        tags: ${{ steps.gitversion.outputs.fullSemVer }},latest
+        push: true
+
+    - name: Docker build (feature branch)
+      if: github.ref != 'refs/heads/master'
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: mabead/old-github-packages-cleaner/old-github-packages-cleaner
+        path: src/OldGitHubPackagesCleaner/
+        tags: ${{ steps.gitversion.outputs.fullSemVer }}
+        push: true
+
+    - name: Tag
+      if: github.ref == 'refs/heads/master'
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.gitversion.outputs.fullSemVer }}
+        release_name: Release ${{ steps.gitversion.outputs.fullSemVer }}
