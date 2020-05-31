@@ -35,7 +35,7 @@ jobs:
         registry: docker.pkg.github.com
         repository: mabead/old-github-packages-cleaner/old-github-packages-cleaner
         path: src/OldGitHubPackagesCleaner/
-        tags: ${{ steps.gitversion.outputs.fullSemVer }},latest
+        tags: latest,${{ steps.gitversion.outputs.fullSemVer }}
         push: true
 
     - name: Docker build (feature branch)
