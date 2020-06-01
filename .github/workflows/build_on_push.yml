@@ -30,25 +30,23 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v1
       with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: mabead/old-github-packages-cleaner/old-github-packages-cleaner
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mabead/old-github-packages-cleaner
         path: src/OldGitHubPackagesCleaner/
-        tags: latest,${{ steps.gitversion.outputs.fullSemVer }}
+        tags: ${{ steps.gitversion.outputs.fullSemVer }},latest
         push: true
 
     - name: Docker build (feature branch)
       if: github.ref != 'refs/heads/master'
       uses: docker/build-push-action@v1
       with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: mabead/old-github-packages-cleaner/old-github-packages-cleaner
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mabead/old-github-packages-cleaner
         path: src/OldGitHubPackagesCleaner/
         tags: ${{ steps.gitversion.outputs.fullSemVer }}
-        push: true
+        push: false
 
     - name: Tag
       if: github.ref == 'refs/heads/master'
