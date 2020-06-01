@@ -10,6 +10,6 @@ jobs:
     steps:
     - name: Hello world action step
       id: hello
-      uses: docker://mabead/old-github-packages-cleaner:0.1.3
+      uses: docker://mabead/old-github-packages-cleaner:latest
       with:
           who-to-greet: 'Max'
